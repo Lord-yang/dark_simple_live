@@ -1,0 +1,53 @@
+name: Build Windows EXE2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter (stable)
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Flutter doctor
+        run: flutter doctor -v
+
+      - name: Clean project
+        working-directory: simple_live_app
+        run: flutter clean
+
+      - name: Install dependencies
+        working-directory: simple_live_app
+        run: flutter pub get
+
+      - name: Build Windows (Release)
+        working-directory: simple_live_app
+        run: flutter build windows --release
+
+      - name: Verify build output
+        working-directory: simple_live_app/build/windows/runner/Release
+        run: |
+          echo "===== Build Output ====="
+          dir
+          if not exist *.exe (
+            echo "ERROR: EXE not found"
+            exit 1
+          )
+
+      - name: Upload Windows EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: dart_simple_live_windows
+          path: simple_live_app/build/windows/runner/Release/
