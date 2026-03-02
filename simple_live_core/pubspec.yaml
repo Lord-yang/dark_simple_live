@@ -19,7 +19,7 @@ dependencies:
   fixnum: ^1.1.0
   dart_quickjs:
     git:
-      url: https://github.com/xiaoyaocz/dart_quickjs.git
+      url: https://github.com/Lord-yang/dart_quickjs.git
       ref: main
 
 dev_dependencies: 
